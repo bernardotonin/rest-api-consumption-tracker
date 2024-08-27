@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  customer_code Int @id @default(autoincrement())
+  measures      Measure[]
+}
+
+model Measure {
+  measure_uuid     String    @id @default(cuid())
+  measure_datetime DateTime
+  measure_type     String
+  has_confirmed    Boolean
+  image_url        String
+  customer         Customer   @relation(fields: [customerId], references: [customer_code])
+  customerId       Int
+}
