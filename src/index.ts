@@ -1,5 +1,7 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import { ValidateUploadData } from './lib/utils';
+import { ExtractTextFromImage } from './lib/gemini';
+
 
 const app = express();
 const port = 3000;
@@ -8,12 +10,9 @@ app.use(express.static('public'));
 
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send({ date: Date.UTC(2024) });
-});
-
-app.post('/upload', ValidateUploadData , (req: Request, res: Response) => {
-  res.send('validation passed');
+app.post('/upload', ValidateUploadData , async (req: Request, res: Response) => {
+  const generatedContent = await ExtractTextFromImage(req.body.image, res)
+  res.send({ response: generatedContent })
 });
 
 app.listen(port, () => {
