@@ -14,8 +14,7 @@ import {
   GetUserByIdWithQuery
 } from './lib/repository';
 
-const app = express();
-const port = 3000;
+export const app = express();
 
 app.use(express.static('public'));
 
@@ -33,7 +32,7 @@ app.post('/upload', ValidateUploadData, async (req: Request, res: Response) => {
   );
 
   if (MeasureExists) {
-    res.status(409).send({
+    return res.status(409).send({
       error_code: 'DOUBLE_REPORT',
       error_description: 'Leitura desse mês já realizada!'
     });
@@ -46,7 +45,7 @@ app.post('/upload', ValidateUploadData, async (req: Request, res: Response) => {
   const generatedOCRContent = await ExtractTextFromImage(image);
 
   if (generatedOCRContent === false) {
-    res.status(400).send({
+    return res.status(500).send({
       error: 'Error with Gemini LLM',
       error_description: 'Check your api key'
     });
@@ -63,7 +62,7 @@ app.post('/upload', ValidateUploadData, async (req: Request, res: Response) => {
   }
 
   if (createdMeasure) {
-    res.status(200).send({
+    return res.status(200).send({
       image_url: createdMeasure.image_url,
       measure_value: createdMeasure.measure_value,
       measure_uuid: createdMeasure.measure_uuid
@@ -77,7 +76,7 @@ app.patch('/confirm', ValidateConfirmData, async (req: Request, res: Response) =
   const exists = await CheckIfMeasureExist(measure_uuid);
 
   if (!exists) {
-    res.status(404).send({
+    return res.status(404).send({
       error_code: 'MEASURE_NOT_FOUND',
       error_description: 'Medição não encontrada!'
     });
@@ -86,7 +85,7 @@ app.patch('/confirm', ValidateConfirmData, async (req: Request, res: Response) =
   const isConfirmed = await CheckIfMeasureValueIsConfirmed(measure_uuid);
 
   if (isConfirmed) {
-    res.status(409).send({
+    return res.status(409).send({
       error_code: 'CONFIRMATION_DUPLICATE',
       error_description: 'Leitura já confirmada!'
     });
@@ -95,13 +94,13 @@ app.patch('/confirm', ValidateConfirmData, async (req: Request, res: Response) =
   const updateMeasure = await ConfirmMeasureValue(measure_uuid, Number(confirmed_value));
 
   if (updateMeasure.measure_value !== confirmed_value) {
-    res.status(400).send({
+    return res.status(400).send({
       success: false
     });
   }
 
   if (updateMeasure.measure_value === confirmed_value) {
-    res.status(200).send({
+    return res.status(200).send({
       success: true
     });
   }
@@ -114,7 +113,7 @@ app.get('/:customer_code/list', ValidateListParams, async (req: Request, res: Re
   const UserExists = await CheckIfUserExist(customer_code);
 
   if (!UserExists) {
-    res.status(404).send({
+    return res.status(404).send({
       error_code: 'USER_NOT_FOUND',
       error_description: 'Esse usuário não existe!'
     });
@@ -123,7 +122,7 @@ app.get('/:customer_code/list', ValidateListParams, async (req: Request, res: Re
   const UserHasMeasures = CheckIfUserHasMeasures(customer_code);
 
   if (!UserHasMeasures) {
-    res.status(404).send({
+    return res.status(404).send({
       error_code: 'MEASURES_NOT_FOUND',
       error_description: '"Nenhuma leitura encontrada!'
     });
@@ -139,9 +138,5 @@ app.get('/:customer_code/list', ValidateListParams, async (req: Request, res: Re
   }
 
 
-  res.status(200).send(userData);
-});
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  return res.status(200).send(userData);
 });
