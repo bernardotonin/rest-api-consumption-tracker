@@ -4,6 +4,10 @@ import { WriteBase64Image } from './utils';
 // user functions
 
 export const CheckIfUserExist = async (costumer_code: string) => {
+  if (isNaN(Number(costumer_code))) {
+    return false;
+  }
+
   const exists = await prisma.customer.findFirst({
     where: {
       customer_code: Number(costumer_code)
@@ -23,7 +27,7 @@ export const CheckIfUserHasMeasures = async (costumer_code: string) => {
     }
   });
 
-  return user?.measures !== null;
+  return user?.measures.length !== 0;
 };
 
 export const CreateUserWithId = async (costumer_code: string) => {
@@ -81,7 +85,7 @@ export const CheckIfMeasureExistWithDate = async (
 };
 
 export const CheckIfMeasureExist = async (measure_uuid: string) => {
-  const exists = await prisma.measure.findFirst({
+  const exists = await prisma.measure.findUnique({
     where: {
       measure_uuid: measure_uuid
     }
