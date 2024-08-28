@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { Response } from 'express';
 import { ImageTypeRecord } from './utils';
 import { configDotenv } from 'dotenv';
 
@@ -10,7 +9,7 @@ const model = gemini.getGenerativeModel({
   model: 'gemini-1.5-pro'
 });
 
-export const ExtractTextFromImage = async (image: string, res: Response) => {
+export const ExtractTextFromImage = async (image: string) => {
   const prompt =
     'This is a consumption meter, OCR only the characters that represent the consumption, just the numbers, any representantion of a measuring unit should be discarded. Remember that the characters refering to the consumption must be numbers!';
   let result;
@@ -27,10 +26,7 @@ export const ExtractTextFromImage = async (image: string, res: Response) => {
       }
     ]);
   } catch (error) {
-    return res.status(400).send({
-      error: 'Error with Gemini LLM',
-      error_description: error
-    })
+    return false
   }
 
   return result.response.text();
