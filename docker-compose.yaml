@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    container_name: rest_api_consumption_tracker
+    ports: 
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "file:./dev.db"
+      GEMINI_API_KEY: # API KEY
