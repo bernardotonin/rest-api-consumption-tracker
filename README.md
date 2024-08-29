@@ -8,10 +8,10 @@ Responsável por receber uma imagem em base 64, consultar o Gemini e retornar a 
 Request Body:
 
     { 
-    "image": "base64", 
-    "customer_code": "string", 
-    "measure_datetime": "datetime", 
-    "measure_type": "WATER" ou "GAS"
+        "image": "base64", 
+        "customer_code": "string", 
+        "measure_datetime": "datetime", 
+        "measure_type": "WATER" ou "GAS"
     }
 **PATCH /confirm**<br> 
 <br>
@@ -20,8 +20,8 @@ Responsável por confirmar ou corrigir o valor lido pelo LLM.
 Request body:
 
     { 
-    "measure_uuid": "string", 
-    "confirmed_value": integer 
+        "measure_uuid": "string", 
+        "confirmed_value": integer 
     }
 **GET /<customer_code>/list** <br>
 <br>
