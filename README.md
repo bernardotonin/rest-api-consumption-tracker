@@ -117,3 +117,22 @@ Este endpoint retorna uma lista de medidas de um cliente específico, com um par
         "error_code": "MEASURES_NOT_FOUND",
         "error_description": "Nenhuma leitura encontrada!"
     }
+
+## Como Executar
+
+### Usando Docker
+
+Esta aplicação é **dockerizada**, o que facilita a configuração e execução. Siga os passos abaixo para executar usando Docker.
+
+1.  Certifique-se de que o Docker está instalado em sua máquina.
+2.  Clone o repositório:
+    
+    `git clone https://github.com/bernardotonin/rest-api-consumption-tracker.git` 
+    
+3.  Adicione a sua chave da API do Google Gemini no arquivo  **docker-compose.yaml**
+    
+4.  Execute o comando de compose:
+
+    `docker-compose up --build` 
+ 
+5.  A API estará disponível em `http://localhost:3000`.
